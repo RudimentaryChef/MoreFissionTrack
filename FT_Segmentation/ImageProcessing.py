@@ -30,13 +30,33 @@ def ConvertOneMask(input_path, output_path):
     modified_image = Image.fromarray(image_array.astype(np.uint8))
     modified_image.save(output_path)
 
+def merge_to_tiff(folder_path, output_path, sort = False):
+    # Get list of files in folder
+    files = os.listdir(folder_path)
+
+    # Filter out non-image files. A just in case precaution.
+    image_files = [f for f in files if f.endswith('.jpg') or f.endswith('.jpeg') or f.endswith('.png')]
+
+    # Sort image files if required
+    if(sort):
+        image_files.sort()
+
+    # Open images and merge them into a single TIFF file
+    images = [Image.open(os.path.join(folder_path, f)) for f in image_files]
+    images[0].save(output_path, save_all=True, append_images=images[1:], format='TIFF')
+
+    print("TIFF file created successfully!")
 
 
 
-# Example usage:
-input_folder = "/Users/adikrish/Desktop/input_folder"
-output_folder = "/Users/adikrish/Desktop/output_folder"
-modify_images_in_folder(input_folder, output_folder)
+folder_path = '/path/to/your/folder'
+output_path = '/path/to/output.tiff'
+merge_to_tiff(folder_path, output_path)
 
-# Example usage:
-ConvertOneMask("/Users/adikrish/Desktop/4795.png", "/Users/adikrish/Desktop/4795MOD.png")
+#How to use modify_images_in_folder
+#input_folder = "/Users/adikrish/PycharmProjects/MoreFissionTrack/training/M/label_patch"
+#output_folder = "/Users/adikrish/PycharmProjects/MoreFissionTrack/training/M/segmented"
+#modify_images_in_folder(input_folder, output_folder)
+
+#How to use ConvertOneMask
+#ConvertOneMask("/Users/adikrish/Desktop/4795.png", "/Users/adikrish/Desktop/4795MOD.png")
