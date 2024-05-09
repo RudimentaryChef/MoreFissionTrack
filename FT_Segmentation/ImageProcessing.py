@@ -12,7 +12,7 @@ def modify_images_in_folder(input_folder, output_folder):
         if file.endswith(".png"):
             # Construct the full input and output paths
             input_path = os.path.join(input_folder, file)
-            output_path = os.path.join(output_folder, file.replace(".png", "MOD.png"))
+            output_path = os.path.join(output_folder)
             # Converts every file in the folder accordingly
             ConvertOneMask(input_path, output_path)
 
@@ -48,10 +48,29 @@ def merge_to_tiff(folder_path, output_path, sort = False):
     print("TIFF file created successfully!")
 
 
+import os
 
-folder_path = '/path/to/your/folder'
-output_path = '/path/to/output.tiff'
-merge_to_tiff(folder_path, output_path)
+def rename_file_endings(directory, find, replace):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(replace):
+                old_file_path = os.path.join(root, file)
+                new_file_path = os.path.join(root, file.replace(find, replace))
+                os.rename(old_file_path, new_file_path)
+                print(f"Renamed: {old_file_path} to {new_file_path}")
+
+# Provide the directory path you want to search through
+directory_path = "/Users/adikrish/PycharmProjects/MoreFissionTrack/training/M/segmented"
+
+# Call the function to rename the files
+rename_file_endings(directory_path, "MOD.png", ".png")
+
+seg_folder_path = '/Users/adikrish/PycharmProjects/MoreFissionTrack/training/M/segmented'
+seg_output_path = '/Users/adikrish/PycharmProjects/MoreFissionTrack/training/SegTrainTIFF/masks.TIFF'
+patch_folder_path = '/Users/adikrish/PycharmProjects/MoreFissionTrack/training/M/image_patch'
+patch_output_path = '/Users/adikrish/PycharmProjects/MoreFissionTrack/training/SegTrainTIFF/patches.TIFF'
+merge_to_tiff(patch_folder_path, patch_output_path, True)
+merge_to_tiff(seg_folder_path, seg_output_path, True)
 
 #How to use modify_images_in_folder
 #input_folder = "/Users/adikrish/PycharmProjects/MoreFissionTrack/training/M/label_patch"
